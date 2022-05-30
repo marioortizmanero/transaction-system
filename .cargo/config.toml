@@ -1,0 +1,3 @@
+[build]
+# For better performance
+rustflags = ["-C", "target-cpu=native"]

@@ -1,0 +1,15 @@
+[package]
+name = "transaction-system"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+csv = "1.1.6"
+serde = { version = "1.0.137", features = ["derive"] }
+tokio = { version = "1.18.2", features = ["full"] }
+
+[profile.release]
+# LTO optimization for performance
+lto = "thin"
+opt-level = 3
