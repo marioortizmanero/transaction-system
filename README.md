@@ -1,8 +1,8 @@
-# Tokio Transaction System
+# Rust Transaction System
 
-This repository holds a simple transaction system written with Tokio. The
-objective is to process a list of transactions (given in a CSV format) into a
-list of final balances.
+This repository holds a simple transaction system written in Rust. The objective
+is to process a list of transactions (given in a CSV format) into a list of
+final balances.
 
 The input's IDs are unique, but not necessarily in order. For example:
 
@@ -50,11 +50,18 @@ performance more accurately.
 
 * Disputes can only occur once; once a resolve or chargeback occurs, it may not
   start the dispute process again.
+* Errors are handled with the `anyhow` crate, which makes the task quite easy.
+  It attempts to be resilient to errors, e.g., if a line in the CSV is invalid,
+  the error is reported, and it continues its execution.
+* No `unsafe` usage at all, as it wasn't considered necessary for this simple
+  implementation.
 
-For the sake of simplicity, the following parts haven't been improved:
+For the sake of simplicity, the following parts have left in a suboptimal state:
 
 * The algorithm is written with CPU efficiency in mind, but it could be better
   in terms of memory. For example, there is no need to actually have
   `Balance::client`, because its ID is already known from the clients map.
 * No parallelism is implemented, but one possible approach would be to divide
-  the clients in ranges, each for one thread.
+  the clients in ranges, each for one thread. It would need some experimentation
+  because the operations are actually somewhat simple, and multithreading could
+  just not make it more performant.
