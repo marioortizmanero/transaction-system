@@ -34,7 +34,7 @@ where
 }
 
 /// The transaction types supported for this implementation.
-/// 
+///
 /// Another way to save the transactions would be with enum structs (i.e.
 /// `Deposit { client: u16, .. }`), since the amount is only necessary for
 /// deposits and withdrawals. However, the serialization was easier this way,

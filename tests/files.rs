@@ -1,6 +1,6 @@
 use anyhow::Result;
 
-use transaction_system::model::Balance;
+use transaction_system::model::{AllBalances, Balance};
 
 fn run_test(input: &str, output: &str) -> Result<()> {
     let test_dir = env!("CARGO_MANIFEST_DIR");
@@ -9,20 +9,14 @@ fn run_test(input: &str, output: &str) -> Result<()> {
 
     let ret_balances = transaction_system::process(&input)?;
 
-    let mut expected_balances = Balance::init_all();
+    let mut expected_balances = AllBalances::default();
     let mut reader = transaction_system::init_reader(&output)?;
     for result in reader.deserialize::<Balance>() {
         let entry = result?;
-        let client = entry.client as usize;
-        expected_balances[client] = Some(entry);
+        expected_balances.insert(entry.client, entry);
     }
 
-    // Prettier on console by iterating one by one
-    let mut i = 1;
-    for (ret, expected) in ret_balances.into_iter().zip(expected_balances) {
-        assert_eq!(ret, expected, "ret != {output} for client {i}");
-        i += 1;
-    }
+    assert_eq!(ret_balances, expected_balances);
 
     Ok(())
 }
