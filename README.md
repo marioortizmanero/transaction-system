@@ -48,6 +48,12 @@ performance more accurately.
 
 ## Design decisions
 
+* The program takes lines from the CSV input one by one, rather than serializing
+  the whole file first, which makes it best suited for real-life situations. If
+  there were multiple sources of data, however, the program would need to split
+  up the tasks into different workers (e.g., tasks or threads), each with an
+  assigned set of possible clients. That way, no synchronization is needed,
+  since the client operations are independent.
 * Disputes can only occur once; once a resolve or chargeback occurs, it may not
   start the dispute process again.
 * Errors are handled with the `anyhow` crate, which makes the task quite easy.
@@ -62,6 +68,6 @@ For the sake of simplicity, the following parts have left in a suboptimal state:
   in terms of memory. For example, there is no need to actually have
   `Balance::client`, because its ID is already known from the clients map.
 * No parallelism is implemented, but one possible approach would be to divide
-  the clients in ranges, each for one thread. It would need some experimentation
+  the clients in ranges, each for one worker. It would need some experimentation
   because the operations are actually somewhat simple, and multithreading could
-  just not make it more performant.
+  just not make it more performant given a single source.
